@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace Reface.CustomThreadPool
 {
+    /// <summary>
+    /// 固定大小的线程池
+    /// </summary>
     public class FixedSizeThreadPool : IThreadPool
     {
         private readonly FixedSizeThreadPoolOption option;
