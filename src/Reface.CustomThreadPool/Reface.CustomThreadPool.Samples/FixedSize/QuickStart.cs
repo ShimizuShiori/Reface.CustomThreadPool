@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Reface.CustomThreadPool.ThreadStarters;
+using System;
 using System.Linq;
 using System.Threading;
 
@@ -10,7 +11,11 @@ namespace Reface.CustomThreadPool.Samples.FixedSize
 
         public void Run()
         {
-            FixedSizeThreadPoolOption option = new FixedSizeThreadPoolOption();
+            FixedSizeThreadPoolOption option = new FixedSizeThreadPoolOption()
+            {
+                Size = 2,
+                ThreadStarterType = ThreadPoolStarter.TYPE
+            };
 
             IThreadPool tp = new FixedSizeThreadPool(option);
 

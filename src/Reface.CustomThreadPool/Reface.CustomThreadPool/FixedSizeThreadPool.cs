@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Reface.CustomThreadPool.ThreadStarters;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Reface.CustomThreadPool
@@ -16,16 +17,28 @@ namespace Reface.CustomThreadPool
         private readonly object LOCKER_Q = new object();
         private readonly object LOCKER_WAIT_EVENTS = new object();
 
+        private readonly IThreadStarter threadStarter;
 
         public FixedSizeThreadPool(FixedSizeThreadPoolOption option)
         {
             this.option = option;
-
+            this.threadStarter = CreateThreadStarter();
             for (int i = 0; i < option.Size; i++)
-                ThreadPool.QueueUserWorkItem(ExecuteWorkers);
+                this.threadStarter.StartThread(ExecuteWorkers);
         }
 
-        private void ExecuteWorkers(object threadState)
+        private IThreadStarter CreateThreadStarter()
+        {
+            switch (option.ThreadStarterType)
+            {
+                case ThreadPoolStarter.TYPE:
+                    return new ThreadPoolStarter();
+                default:
+                    return new NewThreadStarter();
+            }
+        }
+
+        private void ExecuteWorkers()
         {
             AutoResetEvent @event = new AutoResetEvent(false);
 
